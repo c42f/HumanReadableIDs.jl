@@ -74,16 +74,16 @@ function MarkovHridSampler(start_letter_probs::AbstractVector,
 end
 
 """
-Create a word-like ID of total length `id_length`, by running a Markov chain
+Create a word-like ID of total length `len`, by running a Markov chain
 with the initial letter probability `start_letter_probs` and transition
 probabilities `pairwise_probs`.
 """
-function Random.randstring(m::MarkovHridSampler, id_length::Integer)
+function Random.randstring(rng::AbstractRNG, m::MarkovHridSampler, len::Integer)
     nameinds = Int[]
-    cind = rand(m.start_letter_sampler)
+    cind = rand(rng, m.start_letter_sampler)
     push!(nameinds, cind)
-    for i=2:id_length
-        cind = rand(m.pairwise_samplers[cind])
+    for i=2:len
+        cind = rand(rng, m.pairwise_samplers[cind])
         push!(nameinds, cind)
     end
     name = join('a' .+ nameinds .- 1)
@@ -91,6 +91,9 @@ function Random.randstring(m::MarkovHridSampler, id_length::Integer)
     name
 end
 
+# As these are meant to be random IDs, they're securely generated with
+# RandomDevice() by default.
+Random.randstring(m::MarkovHridSampler, len::Integer) = randstring(RandomDevice(), m, len)
 
 include("name_model.jl")
 

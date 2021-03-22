@@ -1,6 +1,6 @@
 module HumanReadableIDs
 
-# Write your package code here.
+export encode_proquint, decode_proquint
 
 using Distributions
 using Random
@@ -96,5 +96,7 @@ end
 Random.randstring(m::MarkovHridSampler, len::Integer) = randstring(RandomDevice(), m, len)
 
 include("name_model.jl")
+
+include("proquints.jl")
 
 end
